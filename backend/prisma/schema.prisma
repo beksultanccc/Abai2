@@ -1,0 +1,177 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                    Int          @id @default(autoincrement())
+  fullName              String
+  email                 String       @unique
+  passwordHash          String
+  role                  String       @default("STUDENT")
+  grade                 Int?
+  section               String?
+  createdAt             DateTime     @default(now())
+
+  taughtCourses         Course[]     @relation("CourseTeacher")
+  enrollments           Enrollment[]
+  submissions           Submission[]
+  resetTokens           PasswordResetToken[]
+
+  createdDirectorTasks  DirectorTask[] @relation("DirectorTaskCreator")
+  assignedDirectorTasks DirectorTask[] @relation("DirectorTaskAssignee")
+  directorTaskComments DirectorTaskComment[]
+
+  @@index([grade, section])
+}
+
+model PasswordResetToken {
+  id         Int      @id @default(autoincrement())
+  token      String   @unique
+  userId     Int
+  expiresAt  DateTime
+  used       Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
+}
+model Course {
+  id           Int          @id @default(autoincrement())
+  title        String
+  description  String
+  category     String?
+  thumbnailUrl String?
+  teacherId    Int
+  grade        Int?
+  section      String?
+  createdAt    DateTime     @default(now())
+
+  teacher      User         @relation("CourseTeacher", fields: [teacherId], references: [id])
+  lessons      Lesson[]
+  assignments  Assignment[]
+  enrollments  Enrollment[]
+
+  @@index([grade, section])
+}
+
+model Enrollment {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  courseId  Int
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+}
+
+model Lesson {
+  id          Int              @id @default(autoincrement())
+  title       String
+  content     String
+  videoUrl    String?
+  fileUrl     String?
+  fileName    String?
+  order       Int              @default(0)
+  courseId    Int
+  createdAt   DateTime         @default(now())
+  course      Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  attachments LessonAttachment[]
+}
+
+model LessonAttachment {
+  id        Int      @id @default(autoincrement())
+  lessonId  Int
+  fileName  String
+  fileUrl   String
+  mimeType  String?
+  createdAt DateTime @default(now())
+  lesson    Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+}
+
+model Assignment {
+  id          Int          @id @default(autoincrement())
+  title       String
+  description String
+  dueDate     DateTime?
+  courseId    Int
+  createdAt   DateTime     @default(now())
+  course      Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  submissions Submission[]
+}
+
+model Submission {
+  id           Int                    @id @default(autoincrement())
+  answer       String
+  score        Int?
+  feedback     String?
+  status       String                 @default("SUBMITTED")
+  assignmentId Int
+  studentId    Int
+  createdAt    DateTime               @default(now())
+  assignment   Assignment             @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  student      User                   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  attachments  SubmissionAttachment[]
+
+  @@unique([assignmentId, studentId])
+}
+
+model SubmissionAttachment {
+  id           Int        @id @default(autoincrement())
+  submissionId Int
+  fileName     String
+  fileUrl      String
+  mimeType     String?
+  createdAt    DateTime   @default(now())
+  submission   Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+}
+
+model DirectorTask {
+  id          Int                     @id @default(autoincrement())
+  title       String
+  description String
+  priority    String                  @default("Орташа")
+  status      String                  @default("Жаңа")
+  dueDate     DateTime?
+  creatorId   Int
+  assigneeId  Int?
+  isForAll    Boolean                 @default(false)
+  createdAt   DateTime                @default(now())
+  updatedAt   DateTime                @updatedAt
+
+  creator     User                    @relation("DirectorTaskCreator", fields: [creatorId], references: [id])
+  assignee    User?                   @relation("DirectorTaskAssignee", fields: [assigneeId], references: [id])
+
+  attachments DirectorTaskAttachment[]
+  comments    DirectorTaskComment[]
+}
+
+model DirectorTaskAttachment {
+  id             Int          @id @default(autoincrement())
+  directorTaskId Int
+  fileName       String
+  fileUrl        String
+  mimeType       String?
+  uploadedById   Int?
+  type           String       @default("DIRECTOR") // DIRECTOR | TEACHER
+  createdAt      DateTime     @default(now())
+
+  directorTask   DirectorTask @relation(fields: [directorTaskId], references: [id], onDelete: Cascade)
+}
+model DirectorTaskComment {
+  id             Int          @id @default(autoincrement())
+  directorTaskId Int
+  authorId       Int
+  content        String
+  createdAt      DateTime     @default(now())
+
+  directorTask   DirectorTask @relation(fields: [directorTaskId], references: [id], onDelete: Cascade)
+  author         User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
+}

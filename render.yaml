@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: bilimspace-backend
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install && npm run prisma:generate
+    startCommand: npx prisma db push && npm run seed && npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: bilimspace-postgres
+          property: connectionString
+      - key: CLIENT_URLS
+        value: https://your-frontend.vercel.app
+      - key: UPLOAD_DIR
+        value: ./src/uploads
+
+databases:
+  - name: bilimspace-postgres
+    databaseName: bilimspace
+    user: bilimspace
