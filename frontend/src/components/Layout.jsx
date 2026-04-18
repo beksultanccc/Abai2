@@ -96,7 +96,7 @@ export default function Layout() {
               <ShieldCheck size={22} />
             </div>
             <div>
-              <div className="brand-title">BilimSpace</div>
+              <div className="brand-title">Abai№2Edu</div>
               <div className="brand-subtitle">Мектеп LMS жүйесі</div>
             </div>
           </div>

@@ -37,7 +37,7 @@ export default function HomePage() {
     <section className="stack-lg">
       <div className="hero hero-modern hero-grid">
         <div>
-          <span className="pill">BilimSpace LMS</span>
+          <span className="pill">Abai№2Edu LMS</span>
 
           <h1>Мектепке арналған заманауи оқу платформасы</h1>
 
