@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { KeyRound, ShieldCheck } from "lucide-react";
-import { api } from "../utils/api.js";
+import api from "../lib/api.js";
 
 export default function ResetPasswordPage() {
   const navigate = useNavigate();
@@ -40,21 +40,18 @@ export default function ResetPasswordPage() {
     }
 
     try {
-      const data = await api("/auth/reset-password", {
-        method: "POST",
-        body: JSON.stringify({
-          token,
-          password,
-        }),
+      const res = await api.post("/auth/reset-password", {
+        token,
+        password,
       });
 
-      setMessage(data.message || "Құпиясөз сәтті жаңартылды.");
+      setMessage(res.data.message || "Құпиясөз сәтті жаңартылды.");
 
       setTimeout(() => {
         navigate("/login", { replace: true });
       }, 1200);
     } catch (e) {
-      setError(e.message || "Құпиясөзді жаңарту кезінде қате болды");
+      setError(e?.response?.data?.message || "Құпиясөзді жаңарту кезінде қате болды");
     } finally {
       setLoading(false);
     }

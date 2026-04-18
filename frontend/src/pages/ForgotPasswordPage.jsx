@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Mail, ShieldCheck } from "lucide-react";
-import { api } from "../utils/api.js";
+import api from "../lib/api.js";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -16,16 +16,14 @@ export default function ForgotPasswordPage() {
     setMessage("");
 
     try {
-      const data = await api("/auth/forgot-password", {
-        method: "POST",
-        body: JSON.stringify({ email }),
-      });
+      const res = await api.post("/auth/forgot-password", { email });
 
       setMessage(
-        data.message || "Егер бұл email жүйеде болса, қалпына келтіру сілтемесі жіберілді."
+        res.data.message ||
+          "Егер бұл email жүйеде болса, қалпына келтіру сілтемесі жіберілді."
       );
     } catch (e) {
-      setError(e.message || "Сұраныс жіберу кезінде қате болды");
+      setError(e?.response?.data?.message || "Сұраныс жіберу кезінде қате болды");
     } finally {
       setLoading(false);
     }
