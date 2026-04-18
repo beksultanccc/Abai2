@@ -18,18 +18,27 @@ const allowedOrigins = (process.env.CLIENT_URLS || process.env.CLIENT_URL || "ht
   .map((item) => item.trim())
   .filter(Boolean);
 
+console.log("ALLOWED ORIGINS:", allowedOrigins);
+
 const uploadsDir = path.resolve(process.env.UPLOAD_DIR || "src/uploads");
 fs.mkdirSync(uploadsDir, { recursive: true });
 
 app.use(
   cors({
     origin(origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      console.log("CORS BLOCKED:", origin);
       return callback(new Error("CORS рұқсаты жоқ"));
     },
     credentials: true,
   })
 );
+
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(morgan("dev"));
@@ -53,7 +62,9 @@ app.use("/api/director-tasks", directorTaskRoutes);
 
 app.use((err, _req, res, _next) => {
   console.error(err);
-  res.status(err.status || 500).json({ message: err.message || "Сервер қатесі" });
+  res.status(err.status || 500).json({
+    message: err.message || "Сервер қатесі",
+  });
 });
 
 export default app;
