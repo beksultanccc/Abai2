@@ -228,7 +228,7 @@ export default function HomePage() {
 
       <div className="card-soft" style={{ padding: 28, textAlign: "center" }}>
         <h2 style={{ margin: 0, fontSize: 30, fontWeight: 800 }}>
-          BilimSpace платформасына қосылыңыз
+          Abai№2Edu платформасына қосылыңыз
         </h2>
         <p style={{ marginTop: 12, color: "#64748b" }}>
           Оқу процесін жеңілдетіп, мектептің цифрлық ортасын бір жерден

@@ -35,7 +35,7 @@ export default function LoginPage() {
       <section className="auth-showcase">
         <div className="showcase-badge">
           <GraduationCap size={22} />
-          <span>BilimSpace</span>
+          <span>Abai№2Edu</span>
         </div>
 
         <h1>Мектепке арналған заманауи оқу платформасы</h1>
