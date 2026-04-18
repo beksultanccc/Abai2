@@ -131,7 +131,7 @@ export default function Layout() {
           })}
         </nav>
 
-        <div className="sidebar-footer card-soft">
+        <div className="sidebar-footer">
           <div className="user-chip">
             <div className="avatar">
               {user?.fullName?.charAt(0)?.toUpperCase() || "U"}
