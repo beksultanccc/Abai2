@@ -38,7 +38,7 @@ app.use("/uploads", express.static(uploadsDir));
 app.get("/api/health", (_req, res) => {
   res.json({
     ok: true,
-    message: "BilimSpace LMS API жұмыс істеп тұр",
+    message: "Abai№2Edu LMS API жұмыс істеп тұр",
     timestamp: new Date().toISOString(),
   });
 });

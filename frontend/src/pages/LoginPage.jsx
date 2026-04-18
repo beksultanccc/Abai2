@@ -102,13 +102,6 @@ export default function LoginPage() {
             <Link to="/forgot-password">Құпиясөзді ұмыттыңыз ба?</Link>
             <Link to="/register">Тіркелу</Link>
           </div>
-
-          <div className="demo-box">
-            <strong>Demo аккаунттар</strong>
-            <div>Директор: admin@school.local / Admin123!</div>
-            <div>Мұғалім: teacher@school.local / Teacher123!</div>
-            <div>Оқушы: student@school.local / Student123!</div>
-          </div>
         </div>
       </section>
     </div>
