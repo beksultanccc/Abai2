@@ -3,13 +3,12 @@
   "version": "3.0.0",
   "type": "module",
   "scripts": {
-    "dev": "node --watch src/server.js",
-    "start": "node src/server.js",
-    "seed": "node prisma/seed.js",
-    "prisma:generate": "prisma generate",
-    "prisma:push": "prisma db push",
-    "postinstall": "prisma generate"
-  },
+  "dev": "node --watch src/server.js",
+  "start": "node src/server.js",
+  "seed": "node prisma/seed.js",
+  "prisma:generate": "node ./node_modules/prisma/build/index.js generate",
+  "prisma:push": "node ./node_modules/prisma/build/index.js db push"
+},
   "dependencies": {
     "@prisma/client": "^5.22.0",
     "bcryptjs": "^2.4.3",
